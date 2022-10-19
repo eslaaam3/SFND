@@ -167,8 +167,9 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.tar.gz \
 # ======== Install ROS2 foxy ========
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
         ros-foxy-ros-base \
+        ros-foxy-gazebo-* \
         ros-foxy-rmw-cyclonedds-cpp \
         python3-argcomplete \
         python3-colcon-common-extensions \
@@ -204,31 +205,38 @@ RUN apt-get install -y \
     rsync \
     nano
 
-
-# ================================ #
-#          New layer here          #
-# ================================ #
-
 # ============ Configure apt-get autocompletion ============ #
 RUN rm /etc/apt/apt.conf.d/docker-clean \
     && touch /etc/apt/apt.conf.d/docker-clean \
     && echo "DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };" > /etc/apt/apt.conf.d/docker-clean
 
+
+
+
+# ====================================== #
+#          ADD A NEW LAYER HERE          #
+# ====================================== #
+
+
+
 # ==================================================== #
-#            Login using the user $USERNAME            #
+#            LOGIN USING THE USER $USERNAME            #
 # ==================================================== #
 
 USER $USERNAME 
 WORKDIR /home/$USERNAME
 RUN rosdep update
-RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
 RUN sudo service ssh start
 
-ARG ROS_DISCOVERY_SERVER
-ARG ROS_DOMAIN_ID
+# ========== Define build-args with default values ==========
+ARG ROS_DISCOVERY_SERVER=10.20.0.249
+ARG ROS_DOMAIN_ID=100
 
-RUN echo "export ROS_DOMAIN_ID=$ROS_DOMAIN_ID" >> ~/.bashrc \
-    && echo "export ROS_DISCOVERY_SERVER=$ROS_DISCOVERY_SERVER" >> ~/.bashrc
+# ========== Add environment variables to .bashrc ==========
+RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc \
+    && echo "export ROS_DOMAIN_ID=$ROS_DOMAIN_ID" >> ~/.bashrc \
+    && echo "export ROS_DISCOVERY_SERVER=$ROS_DISCOVERY_SERVER" >> ~/.bashrc \
+    && sudo apt-get update
 
 SHELL ["/bin/bash", "-c"]
 
