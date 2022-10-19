@@ -208,6 +208,11 @@ RUN apt-get install -y \
 #                             #
 # ======== New layer ======== #
 
+# ============ Configure apt-get autocompletion ============ #
+RUN rm /etc/apt/apt.conf.d/docker-clean \
+    && touch /etc/apt/apt.conf.d/docker-clean \
+    && echo "DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };" > /etc/apt/apt.conf.d/docker-clean
+
 # =========== Login using the user $USERNAME ===========
 USER $USERNAME 
 WORKDIR /home/$USERNAME
