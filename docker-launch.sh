@@ -48,7 +48,7 @@ docker run \
     --gpus all \
     -e "TERM=xterm-256color" \
     --env="DISPLAY=$DISPLAY" \
-    --net=host \
+    -p 5001:22 \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
     --env="QT_X11_NO_MITSHM=1" \
     --env="XAUTHORITY=$XAUTH" \

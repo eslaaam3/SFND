@@ -135,7 +135,7 @@ RUN apt-get update && apt-get install -y pcl-tools
 RUN unset PCL_VERSION
 
 
-# ======== Installing OpenCV library ========
+# ======== Installing OpenCV library (with CUDA) ========
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     python3-pip \
     unzip \
@@ -189,7 +189,7 @@ RUN sudo apt-get install sublime-text
 
 # =========== Cleaning up the messsssss ===========
 WORKDIR /home/$USERNAME
-RUN rm -rf /tmp/ && mkdir /tmp
+RUN rm -rf /tmp/ && mkdir /tmp && chmod 1777 /tmp
 
 # ======== Config ssh ============
 RUN apt-get install -y openssh-server
@@ -212,6 +212,7 @@ USER $USERNAME
 WORKDIR /home/$USERNAME
 RUN rosdep update
 RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
+EXPOSE 22
 
 SHELL ["/bin/bash", "-c"]
 
