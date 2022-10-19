@@ -201,7 +201,8 @@ RUN apt-get install -y \
     dbus \
     dbus-x11 \
     gdb \
-    rsync
+    rsync \
+    nano
 
 # ======== New layer ======== #
 #                             #
