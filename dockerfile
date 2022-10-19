@@ -193,7 +193,7 @@ RUN rm -rf /tmp/ && mkdir /tmp && chmod 1777 /tmp
 
 # ======== Config ssh ============
 RUN apt-get install -y openssh-server
-RUN ssh-keygen -A  && service ssh start
+RUN ssh-keygen -A
 
 # ======== Post-build ========
 RUN apt-get install -y \
@@ -213,6 +213,7 @@ WORKDIR /home/$USERNAME
 RUN rosdep update
 RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
 EXPOSE 22
+RUN sudo service ssh start
 
 SHELL ["/bin/bash", "-c"]
 
