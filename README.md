@@ -19,7 +19,7 @@
 ## How to use
 The image is already built and pushed on our local server
 - `docker pull X.X.X.X:5002/upolis:latest` where `X.X.X.X` is the docker registry IP
-- Use the file `docker-launch.sh` in this repositry as follows
+- Use the file `docker-launch.sh` in this repository as follows
 ```bash
 chmod +x docker-launch.sh
 ./docker-launch.sh <container_name> <image_name>
