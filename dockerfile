@@ -1,9 +1,11 @@
 FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
 
 ENV NVIDIA_VISIBLE_DEVICES ${NVIDIA_VISIBLE_DEVICES:-all}
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics
-
-# Add a new sudo user
+ENV NVIDIA_DRIVER_CAPABILITIES \
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+# =============================================== #
+#               ADD A NEW SUDO USER               #
+# =============================================== #
 ENV USERNAME upolis
 ENV HOME /home/$USERNAME
 
@@ -44,7 +46,11 @@ RUN useradd -m $USERNAME && \
         usermod  --uid 1000 $USERNAME && \
         groupmod --gid 1000 $USERNAME
 
-# Install package
+
+# =============================================== #
+#           INSTALL ESSENTIAL PACKAGES            #
+# =============================================== #
+
 RUN echo "Acquire::GzipIndexes \"false\"; Acquire::CompressionTypes::Order:: \"gz\";" > /etc/apt/apt.conf.d/docker-gzip-indexes
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && TZ=Etc/UTC apt-get install -y --no-install-recommends \
@@ -67,13 +73,19 @@ RUN apt-get update && TZ=Etc/UTC apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install libGL and friends
+
+# =============================================== #
+#              INSTALL libGL & FRIENDS            #
+# =============================================== #
+
 RUN apt-get update \
     && apt-get install -y \
         libssl-dev \
         libgl1-mesa-dev
 
-# ======== Installing CMake ========
+# ============================================= #
+#                INSTALL CMake                  #
+# ============================================= #
 WORKDIR /tmp
 ENV CMAKE_VERSION="3.24.2"
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz \
@@ -83,7 +95,9 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cm
     && make \
     && make install
 
-# ======== Installing VTK ========
+# ============================================= #
+#                 INSTALL VTK                   #
+# ============================================= #
 WORKDIR /tmp
 
 RUN apt-get update && apt-get install -y \
@@ -97,11 +111,14 @@ RUN wget https://www.vtk.org/files/release/8.2/VTK-8.2.0.tar.gz \
     && make -j$(nproc) \
     && make install
 
-# ======== Installing PCL library ========
+
+# =============================================== #
+#                Installing PCL library           #
+# =============================================== #
 WORKDIR /tmp
 ENV PCL_VERSION="1.11.0"
 
-# PCL dependencies
+    # ======= PCL dependencies =======
 RUN apt-get install -y \
     libeigen3-dev \
     libflann-dev \
@@ -121,6 +138,7 @@ RUN apt-get install -y \
     libqhull-dev \
     libgtest-dev
 
+    # ======= PCL source download & build =======
 RUN wget https://github.com/PointCloudLibrary/pcl/archive/pcl-${PCL_VERSION}.tar.gz \
     && tar -xf pcl-${PCL_VERSION}.tar.gz \
     && cd pcl-pcl-${PCL_VERSION} \
@@ -135,7 +153,10 @@ RUN apt-get update && apt-get install -y pcl-tools
 RUN unset PCL_VERSION
 
 
-# ======== Installing OpenCV library (with CUDA) ========
+# ============================================================ #
+#            Installing OpenCV library (with CUDA)             #
+# ============================================================ #
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     python3-pip \
     unzip \
@@ -164,7 +185,9 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.tar.gz \
     && make -j$(nproc) \
     && make install
 
-# ======== Install ROS2 foxy ========
+# ==================================================== #
+#                   INSTALL ROS2 FOXY                  #
+# ==================================================== #
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 RUN apt-get update && apt-get install -y \
@@ -181,31 +204,39 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 RUN rosdep init
 
-# ======== Install sublime text ==========
+
+# ========================================= #
+#               POST-BUILD                  #
+# ========================================= #
+
+    # ======== Install sublime text ==========
 RUN wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
 RUN sudo apt-get install apt-transport-https
 RUN echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-RUN sudo apt-get update
-RUN sudo apt-get install sublime-text
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive sudo apt-get install sublime-text
 
-# =========== Cleaning up the messsssss ===========
-WORKDIR /home/$USERNAME
-RUN rm -rf /tmp/ && mkdir /tmp && chmod 1777 /tmp
-
-# ======== Config ssh ============
-RUN apt-get install -y openssh-server
-RUN ssh-keygen -A
-
-# ======== Post-build ========
-RUN apt-get install -y \
+    # ======= Installing basic pkgs/tools
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y \
     terminator \
     dbus \
     dbus-x11 \
     gdb \
     rsync \
-    nano
+    nano \
+    psmisc \
+    inetutils-inetd
 
-# ============ Configure apt-get autocompletion ============ #
+    # =========== Cleaning up the messsssss ===========
+WORKDIR /home/$USERNAME
+RUN rm -rf /tmp/ && mkdir /tmp && chmod 1777 /tmp
+
+    # ======== Config ssh ============
+RUN apt-get install -y openssh-server
+RUN ssh-keygen -A
+
+    # ============ Configure apt-get autocompletion ============ #
 RUN rm /etc/apt/apt.conf.d/docker-clean \
     && touch /etc/apt/apt.conf.d/docker-clean \
     && echo "DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };" > /etc/apt/apt.conf.d/docker-clean
@@ -226,17 +257,18 @@ RUN rm /etc/apt/apt.conf.d/docker-clean \
 USER $USERNAME 
 WORKDIR /home/$USERNAME
 RUN rosdep update
-RUN sudo service ssh start
 
 # ========== Define build-args with default values ==========
 ARG ROS_DISCOVERY_SERVER=10.20.0.249
 ARG ROS_DOMAIN_ID=100
 
 # ========== Add environment variables to .bashrc ==========
-RUN echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc \
-    && echo "export ROS_DOMAIN_ID=$ROS_DOMAIN_ID" >> ~/.bashrc \
-    && echo "export ROS_DISCOVERY_SERVER=$ROS_DISCOVERY_SERVER" >> ~/.bashrc \
+COPY bashrc_update .
+RUN cat bashrc_update >> ~/.bashrc \
     && sudo apt-get update
 
-SHELL ["/bin/bash", "-c"]
+EXPOSE 22
 
+COPY entrypoint.sh .
+RUN sudo chmod +x entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

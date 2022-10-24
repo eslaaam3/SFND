@@ -20,8 +20,8 @@ then
 fi
 xhost +local:docker
 
-# # interactive, terminal
-# -it \                
+# # interactive, terminal, attached to STDIN/OUT/ERR
+# -ita \                
 # # Add 'all' gpus to the container
 # --gpus all \                
 # # Set terminal colors
@@ -42,14 +42,25 @@ xhost +local:docker
 # --runtime=nvidia \
 # # Pass container name and image to use through terminal args
 # --name "$container_name" "$image_name"
+# --mount type=bind,source=/tmp,target=/usr 
+# -v /tmp:/usr
+
+if [[ ! -d ~/${container_name}_workspace ]]; then
+    echo "Creating directory ${container_name}_workspace in /home/$USERNAME"
+    mkdir ~/${container_name}_workspace
+fi
 
 docker run \
     -it \
     --gpus all \
     -e "TERM=xterm-256color" \
     --env="DISPLAY=$DISPLAY" \
+    --env="ROS_DOMAIN_ID=$ROS_DOMAIN_ID" \
+    --env="ROS_DISCOVERY_SERVER=$ROS_DISCOVERY_SERVER" \
     -p 5001:22 \
-    --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+    -v test:/tmp/:rw \
+    --mount type=bind,source=/home/micropolis/${container_name}_workspace,target=/home/upolis/workspace \
     --env="QT_X11_NO_MITSHM=1" \
     --env="XAUTHORITY=$XAUTH" \
     --volume="$XAUTH:$XAUTH" \
