@@ -45,9 +45,11 @@ xhost +local:docker
 # --mount type=bind,source=/tmp,target=/usr 
 # -v /tmp:/usr
 
+timestamp=`date +"%Y%m%d_%H%M%S"`
+
 if [[ ! -d ~/${container_name}_workspace ]]; then
-    echo "Creating directory ${container_name}_workspace /home/$USERNAME/Docker/${container_name}_workspace"
-    mkdir -p ~/Docker/${container_name}_workspace
+    echo "Creating directory ${container_name}_workspace_${timestamp} /home/$USERNAME/Docker/${container_name}_workspace_${timestamp}"
+    mkdir -p ~/Docker/${container_name}_workspace_${timestamp}
 fi
 
 docker run \
@@ -60,7 +62,7 @@ docker run \
     -p 5001:22 \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     -v test:/tmp/:rw \
-    --mount type=bind,source=/home/micropolis/${container_name}_workspace,target=/home/upolis/workspace \
+    --mount type=bind,source=/home/micropolis/Docker/${container_name}_workspace_${timestamp},target=/home/upolis/workspace \
     --env="QT_X11_NO_MITSHM=1" \
     --env="XAUTHORITY=$XAUTH" \
     --volume="$XAUTH:$XAUTH" \

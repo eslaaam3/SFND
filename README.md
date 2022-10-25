@@ -10,7 +10,7 @@
 - ROS2 foxy (+Gazebo)  
 - NVIDIA-Accelerated  
 - SSH-Enabled  
-- External workspace mounted at (`/home/$USERNAME/Documents/$CONTAINER_NAME_workspace`)  
+- External workspace mounted at (`/home/$USERNAME/Docker/$CONTAINER_NAME_workspace`)  
 
 ## Known issues:  
 
