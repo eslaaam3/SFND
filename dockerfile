@@ -226,7 +226,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     rsync \
     nano \
     psmisc \
-    inetutils-inetd
+    inetutils-inetd \
+    inetutils-ping
 
     # =========== Cleaning up the messsssss ===========
 WORKDIR /home/$USERNAME

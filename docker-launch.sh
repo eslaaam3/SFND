@@ -20,6 +20,58 @@ then
 fi
 xhost +local:docker
 
+# ========================================== #
+#               DOCKER INSTALLATION          #
+# ========================================== #
+
+# ========== Installation ==========
+# sudo apt-get update -y
+# sudo apt-get install -y \
+#     ca-certificates \
+#     curl \
+#     gnupg \
+#     lsb-release
+# sudo mkdir -p /etc/apt/keyrings
+# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+# echo \
+#   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+#   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# sudo apt-get update -y
+# sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+# # ========== Post-installation ==========
+# sudo groupadd docker
+# sudo usermod -aG docker $USERNAME
+# newgrp docker
+
+# # ========== NVIDIA Container toolkit ==========
+# curl https://get.docker.com | sh && sudo systemctl --now enable docker
+# distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+#       && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+#       && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+#             sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+#             sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+# sudo apt-get update -y
+# sudo apt-get install -y nvidia-docker2 -y
+# sudo systemctl restart docker
+
+
+# ============================================ #
+#           SETTING UP USER WORKSPACE          #
+# ============================================ #
+
+timestamp=`date +"%Y%m%d_%H%M%S"`
+
+if [[ ! -d ~/${container_name}_workspace ]]; then
+    echo "Creating directory ${container_name}_workspace_${timestamp} /home/$USERNAME/Docker/${container_name}_workspace_${timestamp}"
+    mkdir -p ~/Docker/${container_name}_workspace_${timestamp}
+fi
+
+
+
+# ============================================ #
+#           RUNNING DOCKER CONTAINER           #
+# ============================================ #
+
 # # interactive, terminal, attached to STDIN/OUT/ERR
 # -ita \                
 # # Add 'all' gpus to the container
@@ -45,13 +97,6 @@ xhost +local:docker
 # --mount type=bind,source=/tmp,target=/usr 
 # -v /tmp:/usr
 
-timestamp=`date +"%Y%m%d_%H%M%S"`
-
-if [[ ! -d ~/${container_name}_workspace ]]; then
-    echo "Creating directory ${container_name}_workspace_${timestamp} /home/$USERNAME/Docker/${container_name}_workspace_${timestamp}"
-    mkdir -p ~/Docker/${container_name}_workspace_${timestamp}
-fi
-
 docker run \
     -it \
     --gpus all \
@@ -62,7 +107,7 @@ docker run \
     -p 5001:22 \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     -v test:/tmp/:rw \
-    --mount type=bind,source=/home/micropolis/Docker/${container_name}_workspace_${timestamp},target=/home/upolis/workspace \
+    --mount type=bind,source=/home/$USERNAME/Docker/${container_name}_workspace_${timestamp},target=/home/upolis/workspace \
     --env="QT_X11_NO_MITSHM=1" \
     --env="XAUTHORITY=$XAUTH" \
     --volume="$XAUTH:$XAUTH" \
@@ -71,12 +116,4 @@ docker run \
 
 #export containerId=$(docker ps -l -q)
 
-    
-    
-    
-    
-    
-    
-    
-    
     
