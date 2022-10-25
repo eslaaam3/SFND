@@ -8,9 +8,9 @@
 - VTK v8.2.0 
 - PCL v1.11  
 - ROS2 foxy (+Gazebo)  
-- NVIDIA Accelerated  
+- NVIDIA-Accelerated  
 - SSH-Enabled  
-- External workspace mounted at (`/home/$USERNAME/$CONTAINER_NAME_workspace`)  
+- External workspace mounted at (`/home/$USERNAME/Documents/$CONTAINER_NAME_workspace`)  
 
 ## Known issues:  
 
