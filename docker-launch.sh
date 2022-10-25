@@ -46,8 +46,8 @@ xhost +local:docker
 # -v /tmp:/usr
 
 if [[ ! -d ~/${container_name}_workspace ]]; then
-    echo "Creating directory ${container_name}_workspace /home/$USERNAME/Documents/${container_name}_workspace"
-    mkdir ~/Documents/${container_name}_workspace
+    echo "Creating directory ${container_name}_workspace /home/$USERNAME/Docker/${container_name}_workspace"
+    mkdir -p ~/Docker/${container_name}_workspace
 fi
 
 docker run \
