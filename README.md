@@ -38,7 +38,12 @@
                                                          (X.X.X.X = Server IP)
         }
         ```
-  3. Save and exit
+        Then save and exit
+  3. Restart Docker for the changes to take effects
+        ```bash
+        $ sudo systemctl daemon-reload
+        $ sudo systemctl restart docker
+        ```
 
 ## How to use
 The image is already built and pushed on our local server
@@ -56,4 +61,4 @@ The image is already built and pushed on our local server
                       H O S T   P C               :  CONTAINER
   ~/Docker/<container_name>_workspace_<date_time> : ~/workspace
   ```
-- Super user password inside the container is `upolis`
+- Super user password inside the container is `upolis`, and it can be changed using `chpasswd` command, but generally, there is no need to change it
