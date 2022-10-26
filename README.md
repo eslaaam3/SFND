@@ -35,7 +35,7 @@
                 }
             },
             "insecure-registries" : ["X.X.X.X:5002"] <-- ADD THIS LINE 
-                                                        (X.X.X.X = Server IP)
+                                                         (X.X.X.X = Server IP)
         }
         ```
   3. Save and exit

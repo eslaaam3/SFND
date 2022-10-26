@@ -104,7 +104,7 @@ docker run \
     --env="DISPLAY=$DISPLAY" \
     --env="ROS_DOMAIN_ID=$ROS_DOMAIN_ID" \
     --env="ROS_DISCOVERY_SERVER=$ROS_DISCOVERY_SERVER" \
-    -p 5001:22 \
+    --net=host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     -v test:/tmp/:rw \
     --mount type=bind,source=/home/$USERNAME/Docker/${container_name}_workspace_${timestamp},target=/home/upolis/workspace \
@@ -113,6 +113,9 @@ docker run \
     --volume="$XAUTH:$XAUTH" \
     --runtime=nvidia \
     --name "$container_name" "$image_name"
+    # -p 5001:23 \
+    # -p 80:80 \
+    # -p 11811:11811 \
 
 #export containerId=$(docker ps -l -q)
 
