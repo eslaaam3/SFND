@@ -43,8 +43,15 @@
         ```bash
         $ sudo systemctl daemon-reload
         $ sudo systemctl restart docker
-        ```
-
+        ```  
+- Configure ROS2 across multiple machines  
+    ```bash
+    $ echo "export ROS_DISCOVERY_SERVER=X.X.X.X:11811" >> ~/.bashrc
+    $ echo "export ROS_DOMAIN_ID=<your_domain_id>" >> ~/.bashrc
+    ```  
+    Where:
+    - `X.X.X.X`  = Server IP
+    - `<your_domain_id>` = 0-101 inclusive ([ROS2 Documentation](https://docs.ros.org/en/foxy/Concepts/About-Domain-ID.html#choosing-a-domain-id-long-version))
 ## How to use
 The image is already built and pushed on our local server
 - To get the image locally on your host PC run:  

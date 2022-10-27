@@ -2,8 +2,14 @@
 
 container_name=$1
 image_name=$2
+# ros2_domain_id=$3
+# ros2_discovery_ip=$4
+
 echo $container_name
 echo $image_name
+# echo $ros2_domain_id
+# echo $ros2_discovery_ip
+
 #exit
 
 XAUTH=/tmp/.docker.xauth
@@ -67,7 +73,6 @@ if [[ ! -d ~/${container_name}_workspace ]]; then
 fi
 
 
-
 # ============================================ #
 #           RUNNING DOCKER CONTAINER           #
 # ============================================ #
@@ -101,17 +106,6 @@ fi
 # ================================================ #
 #           ENVIRONMENT VARIABLES - ROS2           #
 # ================================================ #
-upolis_discovery_server=10.20.0.30:11811
-
-if [[ ! $ROS_DISCOVERY_SERVER -eq $upolis_discovery_server ]]; then
-    export ROS_DISCOVERY_SERVER=10.20.0.31:11811
-    echo "export ROS_DISCOVERY_SERVER=10.20.0.31:11811" >> ~/.bashrc
-fi
-
-if [[ ! $ROS_DOMAIN_ID ]]; then
-    export ROS_DOMAIN_ID=8
-    echo "export ROS_DOMAIN_ID=8" >> ~/.bashrc
-fi 
 
 docker run \
     -it \
