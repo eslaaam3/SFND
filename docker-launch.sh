@@ -112,14 +112,14 @@ docker run \
     --gpus all \
     -e "TERM=xterm-256color" \
     --env="DISPLAY=$DISPLAY" \
+    --net=host \
+    -v test:/tmp/:rw \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+    --volume="$XAUTH:$XAUTH" \
     --env="ROS_DOMAIN_ID=$ROS_DOMAIN_ID" \
     --env="ROS_DISCOVERY_SERVER=$ROS_DISCOVERY_SERVER" \
-    --net=host \
-    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    -v test:/tmp/:rw \
-    --mount type=bind,source=/home/$USERNAME/Docker/${container_name}_workspace_${timestamp},target=/home/upolis/workspace \
     --env="QT_X11_NO_MITSHM=1" \
     --env="XAUTHORITY=$XAUTH" \
-    --volume="$XAUTH:$XAUTH" \
     --runtime=nvidia \
     --name "$container_name" "$image_name"
+    # --mount type=bind,source=/home/$USERNAME/Docker/${container_name}_workspace_${timestamp},target=/home/upolis/workspace \
