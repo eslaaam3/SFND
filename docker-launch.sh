@@ -97,6 +97,22 @@ fi
 # --mount type=bind,source=/tmp,target=/usr 
 # -v /tmp:/usr
 
+
+# ================================================ #
+#           ENVIRONMENT VARIABLES - ROS2           #
+# ================================================ #
+upolis_discovery_server=10.20.0.30:11811
+
+if [[ ! $ROS_DISCOVERY_SERVER -eq $upolis_discovery_server ]]; then
+    export ROS_DISCOVERY_SERVER=10.20.0.31:11811
+    echo "export ROS_DISCOVERY_SERVER=10.20.0.31:11811" >> ~/.bashrc
+fi
+
+if [[ ! $ROS_DOMAIN_ID ]]; then
+    export ROS_DOMAIN_ID=8
+    echo "export ROS_DOMAIN_ID=8" >> ~/.bashrc
+fi 
+
 docker run \
     -it \
     --gpus all \
@@ -113,10 +129,3 @@ docker run \
     --volume="$XAUTH:$XAUTH" \
     --runtime=nvidia \
     --name "$container_name" "$image_name"
-    # -p 5001:23 \
-    # -p 80:80 \
-    # -p 11811:11811 \
-
-#export containerId=$(docker ps -l -q)
-
-    
