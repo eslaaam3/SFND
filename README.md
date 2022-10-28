@@ -17,6 +17,7 @@
 - `rviz2` is not working but this can be solved by running ROS2 accros multiple machines by setting up `ROS_DOMAIN_ID` & `ROS_DISCOVERY_SERVER` environment variables on your **host PC**
 
 ## Requirements
+The image is already built and pushed on our local server
 - Install docker from [official documentation](https://docs.docker.com/engine/install/ubuntu/)
 - Proceed to the [Post-Installation steps](https://docs.docker.com/engine/install/linux-postinstall/) for Linux
 - Install [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
