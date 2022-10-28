@@ -34,8 +34,7 @@
                     "runtimeArgs": []
                 }
             },
-            "insecure-registries" : ["X.X.X.X:5002"] <-- ADD THIS LINE 
-                                                         (X.X.X.X = Server IP)
+            "insecure-registries" : ["X.X.X.X:5002"] <-- ADD THIS LINE (X.X.X.X = Server IP)
         }
         ```
         Then save and exit
@@ -55,7 +54,8 @@
 ## How to use
 The image is already built and pushed on our local server
 - To get the image locally on your host PC run:  
-  `docker pull X.X.X.X:5002/upolis:latest` (`X.X.X.X`  = Server IP)  
+  `docker pull X.X.X.X:5002/upolis:latest`  
+  Where: `X.X.X.X`  = Server IP
 - To run a container based on `upolis` image, use the file `docker-launch.sh` in this repository as follows
     ```bash
     $ git clone https://github.com/eslaaam3/upolis_docker/
@@ -65,7 +65,7 @@ The image is already built and pushed on our local server
     ```
 - Once you're inside the container, there's a directory on your **host PC** mounted to the container where you can share files between host PC and container
   ```bash
-                      H O S T   P C               :  CONTAINER
-  ~/Docker/<container_name>_workspace_<date_time> : ~/workspace
+               H O S T   P C          :  CONTAINER
+  ~/Docker/<container_name>_workspace : ~/workspace
   ```
 - Super user password inside the container is `upolis`, and it can be changed using `chpasswd` command, but generally, there is no need to change it

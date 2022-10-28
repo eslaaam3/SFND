@@ -65,11 +65,11 @@ xhost +local:docker
 #           SETTING UP USER WORKSPACE          #
 # ============================================ #
 
-timestamp=`date +"%Y%m%d_%H%M%S"`
+# timestamp=`date +"%Y%m%d_%H%M%S"`
 
-if [[ ! -d ~/${container_name}_workspace ]]; then
-    echo "Creating directory ${container_name}_workspace_${timestamp} /home/$USERNAME/Docker/${container_name}_workspace_${timestamp}"
-    mkdir -p ~/Docker/${container_name}_workspace_${timestamp}
+if [[ ! -d ~/Docker/${container_name}_workspace ]]; then
+    echo "Creating directory ${container_name}_workspace /home/$USERNAME/Docker/${container_name}_workspace"
+    mkdir -p ~/Docker/${container_name}_workspace
 fi
 
 
@@ -115,6 +115,7 @@ docker run \
     --net=host \
     -v test:/tmp/:rw \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+    --mount type=bind,source=/home/$USERNAME/Docker/${container_name}_workspace,target=/home/upolis/workspace \
     --volume="$XAUTH:$XAUTH" \
     --env="ROS_DOMAIN_ID=$ROS_DOMAIN_ID" \
     --env="ROS_DISCOVERY_SERVER=$ROS_DISCOVERY_SERVER" \
@@ -122,4 +123,3 @@ docker run \
     --env="XAUTHORITY=$XAUTH" \
     --runtime=nvidia \
     --name "$container_name" "$image_name"
-    # --mount type=bind,source=/home/$USERNAME/Docker/${container_name}_workspace_${timestamp},target=/home/upolis/workspace \
