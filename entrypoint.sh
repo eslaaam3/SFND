@@ -6,3 +6,5 @@ mv ~/super_client_configuration_file.xml ~/workspace
 ros2 daemon stop
 ros2 daemon start
 /bin/bash
+ros2 daemon stop
+ros2 daemon start
