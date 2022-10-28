@@ -60,6 +60,7 @@ The image is already built and pushed on our local server
 - To run a container based on `upolis` image, use the file `docker-launch.sh` in this repository as follows
     ```bash
     $ git clone https://github.com/eslaaam3/upolis_docker/
+    $ cd upolis_docker
     $ chmod +x docker-launch.sh
     $ # ./docker-launch.sh <container_name> <image_name>
     $ ./docker-launch.sh <container_name> X.X.X.X:5002/upolis:latest
