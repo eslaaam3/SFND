@@ -113,6 +113,7 @@ docker run \
     -e "TERM=xterm-256color" \
     --env="DISPLAY=$DISPLAY" \
     --net=host \
+    --privileged \
     -v test:/tmp/:rw \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     --mount type=bind,source=/home/$USERNAME/Docker/${container_name}_workspace,target=/home/upolis/workspace \
