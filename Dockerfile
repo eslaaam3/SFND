@@ -232,13 +232,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
 # ====================================== #
 #          Install ZED Camera SDK        #
 # ====================================== #
+ARG ARCH=amd64
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
     zstd
-RUN wget -q --no-check-certificate -O ZED_SDK_Linux.run https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/3.8/ZED_SDK_Ubuntu20_cuda11.7_v3.8.1.zstd.run && \
-    chmod +x ZED_SDK_Linux.run ; ./ZED_SDK_Linux.run silent skip_tools && \
-    rm -rf ZED_SDK_Linux.run
 
+COPY install_zed_sdk.sh ./  
+RUN chmod u+x ./install_zed_sdk.sh && ./install_zed_sdk.sh $ARCH
 
 # =========== Cleaning up the messsssss ===========
 WORKDIR /home/$USERNAME
